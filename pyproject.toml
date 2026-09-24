@@ -7,7 +7,12 @@ authors = [
     { name = "Guilherme", email = "guimars22@gmail.com" }
 ]
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "agno>=3.0.11",
+    "ddgs>=9.16.0",
+    "groq>=1.7.0",
+    "python-dotenv[cli]>=1.2.3",
+]
 
 [project.scripts]
 filmspro = "filmspro:main"

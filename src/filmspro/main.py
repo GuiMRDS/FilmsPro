@@ -16,7 +16,10 @@ research_agent = Agent(
         id="openai/gpt-oss-120b",
         api_key=os.getenv("GROQ_API_KEY")
     ),
-    tools=[search_movie],
+    tools=[
+        WebSearchTools(backend="duckduckgo"),
+        search_movie
+    ]
 )
 
 parser_agent = Agent(
@@ -32,11 +35,13 @@ movie_recommendation_agent = Agent(
         id="openai/gpt-oss-120b",
         api_key=os.getenv("GROQ_API_KEY")
     ),
-    tools=[search_movie],
+    tools=[WebSearchTools(backend="duckduckgo"), search_movie],
     parser_model=Groq(
         id="openai/gpt-oss-120b",
         api_key=os.getenv("GROQ_API_KEY")
     ),
+    description=description,
+    instructions=instructions,
     markdown=True,
     add_datetime_to_context=True,
     output_schema=MovieRecommendation,

@@ -12,7 +12,7 @@ dotenv.load_dotenv()
 
 movie_recommendation_agent = Agent(
     name="FilmPro",
-    tools=[WebSearchTools(backend="duckduckgo")],
+    # tools=[WebSearchTools(backend="duckduckgo")],
     model=Groq(id="openai/gpt-oss-120b",api_key=os.getenv("GROQ_API_KEY")),
     description=description,
     instructions=instructions,

@@ -1,5 +1,4 @@
 import asyncio
-import os
 
 import dotenv
 from agno.agent import Agent
@@ -7,10 +6,9 @@ from agno.models.groq import Groq
 from agno.tools.websearch import WebSearchTools
 
 from agent.config import Config
-from filmspro.agent.models.movies import MovieRecommendation
-from filmspro.agent.tools.omdb import search_movie
-from filmspro.agent.prompts import *
-
+from agent.models.movies import MovieRecommendation
+from agent.prompts import description, instructions
+from agent.tools.omdb import search_movie
 
 dotenv.load_dotenv()
 Config.validade()

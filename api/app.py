@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from .routers import router
+from api.routers import router
 
 # Cria instância da aplicação FastAPI
 app = FastAPI(

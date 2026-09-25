@@ -61,8 +61,9 @@ async def recommendations(preferences):
         data: MovieRecommendation = result.content
         pretty_json_output = data.model_dump_json(indent=2)
         print(pretty_json_output)
+        return data
 
-    return result
+    return None
 
 if __name__ == "__main__":
     asyncio.run(recommendations())

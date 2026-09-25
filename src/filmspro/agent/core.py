@@ -6,10 +6,11 @@ from agno.agent import Agent
 from agno.models.groq import Groq
 from agno.tools.websearch import WebSearchTools
 
+from agent.config import Config
 from filmspro.agent.models.movies import MovieRecommendation
 from filmspro.agent.tools.omdb import search_movie
 from filmspro.agent.prompts import *
-from config import Config
+
 
 dotenv.load_dotenv()
 Config.validade()
@@ -52,10 +53,9 @@ movie_recommendation_agent = Agent(
     debug_level=1,
 )
 
-async def recommendations():
+async def recommendations(preferences):
     result = await movie_recommendation_agent.arun(
-        "Estou procurando filmes similares ao Star Wars. "
-        "Gosto de Filmes de ação.",
+        preferences,
         stream=False,
     )
 

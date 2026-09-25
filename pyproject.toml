@@ -14,6 +14,8 @@ dependencies = [
     "fastapi>=0.141.1",
     "groq>=1.7.0",
     "python-dotenv[cli]>=1.2.3",
+    "the-new-hotness>=1.5.0",
+    "uvicorn>=0.54.0",
 ]
 
 [project.scripts]

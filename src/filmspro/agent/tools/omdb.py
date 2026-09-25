@@ -1,11 +1,12 @@
-import os
 from typing import Any
 import aiohttp
-from typer import params
+from agent.config import Config
+
+Config.validade()
 
 
 async def search_movie(title:str) -> dict[str, Any] | str:
-    api_key = os.getenv("OMDB_API_KEY")
+    api_key = Config.OMDB_API_KEY
     if not api_key:
         raise Exception("OMDB_API_KEY não configurada")
 

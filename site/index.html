@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>FilmPro – Recomendador</title>
+  <!-- Fonts and Tailwind CDN from Design System -->
+  <link href="../design/volta-ev.aura.build/assets/css2_4f052ee6d93c.css" rel="stylesheet"/>
+  <script src="../design/volta-ev.aura.build/assets/resource_3fa48481346f.js"></script>
+  <script src="../design/volta-ev.aura.build/assets/lucide_latest_2eebd0ebe8c2.js"></script>
+  <style>
+html, body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'; }
+.glass {
+background: linear-gradient(135deg, rgba(17,24,39,.65) 0%, rgba(13,17,28,.5) 100%);
+backdrop-filter: blur(20px) saturate(1.2);
+}
+@keyframes float {
+0%, 100% { transform: translateY(0px); }
+50% { transform: translateY(-20px); }
+}
+@keyframes pulse-glow {
+0%, 100% { box-shadow: 0 0 30px -8px rgba(99,102,241,0.3); }
+50% { box-shadow: 0 0 50px -6px rgba(99,102,241,0.5); }
+}
+.animate-float { animation: float 6s ease-in-out infinite; }
+.animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+@keyframes gradient-shift {
+0%, 100% { background-position: 0% 50%; }
+50% { background-position: 100% 50%; }
+}
+.animate-gradient {
+background-size: 200% 200%;
+animation: gradient-shift 8s ease infinite;
+}
+@keyframes progress-fill {
+from { width: 0%; }
+}
+.animate-progress { animation: progress-fill 2s ease-out forwards; }
+.fade-in {
+opacity: 0;
+transition: opacity 0.8s ease-out;
+}
+.fade-in.is-visible {
+opacity: 1;
+}
+.slide-up {
+opacity: 0;
+transform: translateY(40px);
+transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.slide-up.is-visible {
+opacity: 1;
+transform: translateY(0);
+}
+.slide-left {
+opacity: 0;
+transform: translateX(40px);
+transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.slide-left.is-visible {
+opacity: 1;
+transform: translateX(0);
+}
+.slide-right {
+opacity: 0;
+transform: translateX(-40px);
+transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.slide-right.is-visible {
+opacity: 1;
+transform: translateX(0);
+}
+.blur-in {
+opacity: 0;
+filter: blur(10px);
+transition: opacity 0.8s ease-out, filter 0.8s ease-out;
+}
+.blur-in.is-visible {
+opacity: 1;
+filter: blur(0);
+}
+.scale-in {
+opacity: 0;
+transform: scale(0.9);
+transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.scale-in.is-visible {
+opacity: 1;
+transform: scale(1);
+}
+.stagger-item {
+opacity: 0;
+transform: translateY(20px);
+transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+.stagger-item.is-visible {
+opacity: 1;
+transform: translateY(0);
+}
+html {
+overflow-y: auto !important;
+overflow-x: hidden !important;
+height: auto !important;
+scroll-behavior: smooth !important;
+}
+body {
+overflow-y: auto !important;
+overflow-x: hidden !important;
+min-height: 100vh !important;
+opacity: 1 !important;
+}
+.card-img{width:100%;height:auto;display:block;}
+  </style>
+</head>
+<body class="bg-gradient-to-br from-[#0a0d13] via-[#0c0f16] to-[#0a0e17] text-white antialiased">
+  <div class=\"aura-background-component top-0 w-full h-screen -z-10 saturate-0 fixed\"><div class=\"absolute w-full h-full left-0 top-0 -z-10\" data-us-project=\"ju5gjGnrRr5Ud4fAt7eh\"></div><script type=\"text/javascript\">!function(){if(!window.UnicornStudio){window.UnicornStudio={isInitialized:!1};var i=document.createElement(\"script\");i.src=\"https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.29/dist/unicornStudio.umd.js\",i.onload=function(){window.UnicornStudio.isInitialized||(UnicornStudio.init(),window.UnicornStudio.isInitialized=!0)},(document.head || document.body).appendChild(i)}}();</script></div>
+  <div class=\"container mx-auto px-4 py-8\">
+    <h1 class="text-3xl font-semibold mb-4 text-center">FilmPro – Recomendador de Filmes</h1>
+    <div class="flex flex-col items-center">
+      <input id="preferences" class="w-full max-w-xl glass p-3 rounded bg-white/10 border border-white/20 text-white placeholder-gray-400 mb-4" placeholder="Digite suas preferências de filme"/>
+      <button id="searchBtn" class="px-6 py-2 rounded bg-indigo-600 text-white hover:bg-indigo-700">Gerar recomendações</button>
+    </div>
+    <div id="results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8"></div>
+  </div>
+
+  <script>
+    document.getElementById('searchBtn').addEventListener('click', async () => {
+      const pref = document.getElementById('preferences').value.trim();
+      const resultsDiv = document.getElementById('results');
+      if (!pref) { alert('Digite suas preferências'); return; }
+      resultsDiv.innerHTML = '<p>Carregando...</p>';
+      try {
+        const res = await fetch('http://127.0.0.1:8000/recommendations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ preferences: pref })
+        });
+        if (!res.ok) throw new Error('Falha na requisição: ' + res.status);
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message || 'Erro desconhecido');
+        const movies = data.data.movies;
+        resultsDiv.innerHTML = '';
+        movies.forEach(m => {
+          const card = document.createElement('div');
+          card.className = 'glass p-4 rounded-md shadow-xl transform transition-transform duration-300 hover:scale-105';
+          card.innerHTML = `
+            <h2 class="text-xl font-semibold mb-2">${m.title} (${m.release_year})</h2>
+            <p class="text-sm mb-2">${m.synopsis}</p>
+            <img class="card-img" src="${m.poster_url || ''}" alt="Poster de ${m.title}" onerror="this.style.display='none'"/>
+          `;
+          resultsDiv.appendChild(card);
+        });
+      } catch (err) {
+        resultsDiv.innerHTML = `<p class="text-red-300">${err.message}</p>`;
+      }
+    });
+  </script>
+</body>
+</html>
